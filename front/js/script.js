@@ -16,18 +16,32 @@ fetch('http://localhost:3000/api/products')
         console.log('erreur!');
     });
 
-// creates a product element in index.html for every value returned by fetch above
+// creates a product element in index.html for every entry returned by fetch above
 function createProducts(products) {
     for (let prod in products) {  
-        let homeProduct = document.createElement('div');
-        homeProduct.style.width = "70%";
-        (items.appendChild(homeProduct)).innerHTML =
-            `<a href="./product.html?${products[prod]._id}">
-                <article>
-                    <img src= "${products[prod].imageUrl}" alt= "${products[prod].altTxt}" />
-                    <h3 class="productName">${products[prod].name}</h3>
-                    <p class="productDescription">${products[prod].description}</p>
-                </article>
-            </a>`;
+
+        let productLink = document.createElement('a');
+        productLink.style.width = '70%';
+        productLink.setAttribute("href",`./product.html?id=${products[prod]._id}`);
+
+        let productArticle = document.createElement('article');
+        productLink.appendChild(productArticle);
+
+        let articleImage = document.createElement('img');
+        articleImage.setAttribute('src', `${products[prod].imageUrl}`);
+        articleImage.setAttribute('alt', `${products[prod].altTxt}`);
+        productArticle.appendChild(articleImage);
+
+        let productName = document.createElement('h3');
+        productName.classList.add('productName');
+        productName.textContent = `${products[prod].name}`;
+        productArticle.appendChild(productName);
+
+        let productDescription = document.createElement('p');
+        productDescription.classList.add('productDescritpion');
+        productDescription.textContent = `${products[prod].description}`;
+        productArticle.appendChild(productDescription);
+
+        items.appendChild(productLink);
     };
-}
+};
