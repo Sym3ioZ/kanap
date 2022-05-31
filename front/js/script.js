@@ -10,14 +10,14 @@ fetch('http://localhost:3000/api/products')
     })
     .then(function(value) {
         console.log(value);
-        createProducts(value);
+        createProductsHtml(value);
     })
     .catch(function(err) {
         console.log('erreur!');
     });
 
 // creates a product element in index.html for every entry returned by fetch above
-function createProducts(products) {
+function createProductsHtml(products) {
     for (let prod in products) {  
 
         let productLink = document.createElement('a');
