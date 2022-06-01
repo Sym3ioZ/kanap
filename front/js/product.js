@@ -62,8 +62,34 @@ function addToCart() {
     let quantity = document.getElementById('quantity');
     let colorSelector = document.getElementById('colors');
     let color = colorSelector.options[colorSelector.selectedIndex].value;
-    let cart = [`${productId}`, `${quantity.value}`, color];
-    console.log(cart);
-    localStorage.setItem('cart', cart);    
+    let productSettings = {
+        productId : `${productId}`, 
+        productQuantity : +`${quantity.value}`, 
+        productColor : color
+    }
+    let productSettingsLinea = JSON.stringify(productSettings);
+
+    let counter = 0;
+    let i =0;
+    // Determines if the product with the selected color already exists in the cart(localstorage), if true, only modifies quantity and break
+    while (i < localStorage.length) {
+        if (localStorage.key(i) == (productId + color)) {
+            let localCart = JSON.parse(localStorage.getItem(localStorage.key(i)));
+            console.log(localCart);
+            localCart.productQuantity += +quantity.value;
+            console.log(localCart);
+            let localCartLinea = JSON.stringify(localCart);
+            localStorage.setItem(localStorage.key(i), localCartLinea);
+            counter = -1;
+            break;
+        }
+        i++;
+        counter++;
+    }
+
+    // If the previous loop didn't succeeded, then counter = localstorage length, and then it sets the porudctsettings in a new entry of the cart (localstorage)
+    if (counter == localStorage.length) {
+        localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
+    }
 }
 
