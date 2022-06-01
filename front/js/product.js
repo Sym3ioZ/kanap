@@ -10,12 +10,6 @@ fetch (`http://localhost:3000/api/products/${productId}`)
         }
     })
     .then (function(value) {
-        console.log(value);
-        var arrayProduct = [];
-        arrayProduct.push(value);
-        arrayProduct.push(value);
-        arrayProduct.push(value);
-        console.log(arrayProduct);
         createProductHtml(value);
     })
     .catch(function(err) {
@@ -92,4 +86,3 @@ function addToCart() {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
 }
-
