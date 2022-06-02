@@ -8,11 +8,12 @@ fetch('http://localhost:3000/api/products')
     })
     .then(function(value) {
         createCartListHtml(value);
-        // removeProducts(value);
     })
     .catch(function(err) {
         console.log('erreur!');
     });
+
+let productsArray = [];
 
 function createCartListHtml(products) {
     let i = 0;
@@ -164,5 +165,20 @@ function createCartListHtml(products) {
             let totalPriceHtml = document.getElementById('totalPrice');
             totalPriceHtml.textContent = totalPrice;
         }
+        productsArrayReload();
+    }
+}
+
+// Creates and updates (if necessary) an array containing all ids of the products in the cart
+function productsArrayReload() {
+    productsArray = [];
+    let i = 0;
+    while (i < localStorage.length) {
+        let productSettingsLinea = localStorage.getItem(localStorage.key(i));
+        let productSettings = JSON.parse(productSettingsLinea);
+        let productSettingsId = productSettings.productId;
+        productsArray.push(productSettingsId);
+
+        i++;
     }
 }
