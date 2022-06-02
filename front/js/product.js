@@ -69,9 +69,7 @@ function addToCart() {
     while (i < localStorage.length) {
         if (localStorage.key(i) == (productId + color)) {
             let localCart = JSON.parse(localStorage.getItem(localStorage.key(i)));
-            console.log(localCart);
             localCart.productQuantity += +quantity.value;
-            console.log(localCart);
             let localCartLinea = JSON.stringify(localCart);
             localStorage.setItem(localStorage.key(i), localCartLinea);
             counter = -1;
@@ -81,7 +79,7 @@ function addToCart() {
         counter++;
     }
 
-    // If the previous loop didn't succeeded, then counter = localstorage length, and then it sets the porudctsettings in a new entry of the cart (localstorage)
+    // If the previous loop didn't succeeded, then counter = localstorage length, and then it sets the productsettings in a new entry of the cart (localstorage)
     if (counter == localStorage.length) {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }

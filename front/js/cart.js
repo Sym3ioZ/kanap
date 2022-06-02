@@ -8,7 +8,7 @@ fetch('http://localhost:3000/api/products')
     })
     .then(function(value) {
         createCartListHtml(value);
-        removeProducts(value);
+        // removeProducts(value);
     })
     .catch(function(err) {
         console.log('erreur!');
@@ -17,9 +17,6 @@ fetch('http://localhost:3000/api/products')
 function createCartListHtml(products) {
     let i = 0;
     let cartItems = document.getElementById('cart__items');
-
-    let totalQuantity = 0;
-    let totalPrice = 0;
 
     while (i < localStorage.length) {
         let productSettingsLinea = localStorage.getItem(localStorage.key(i));
@@ -91,6 +88,17 @@ function createCartListHtml(products) {
         quantityInput.setAttribute('value', `${productSettings.productQuantity}`);
         cartItemContentSettingsQuantity.appendChild(quantityInput);
 
+        // Listening to changing value of the input, modifies quantity and totalQuantity
+        quantityInput.addEventListener('change', modifyQuantity);
+
+        function modifyQuantity(e) {
+            productSettings.productQuantity = e.target.value;
+            productSettingsLinea = JSON.stringify(productSettings);
+            console.log(productSettingsLinea);
+            localStorage.setItem(`${productSettingsId}${productSettings.productColor}`, productSettingsLinea);
+            totalCalculus();
+        }
+
         let cartItemContentSettingsDelete = document.createElement('div');
         cartItemContentSettingsDelete.classList.add('cart__item__content__settings__delete');
         cartItemContentSettings.appendChild(cartItemContentSettingsDelete);
@@ -102,25 +110,54 @@ function createCartListHtml(products) {
         deleteItem.textContent = 'Supprimer';
         cartItemContentSettingsDelete.appendChild(deleteItem);
 
-        // Handling the display of total quantity and total price
-        totalQuantity += productSettings.productQuantity;
-        totalPrice += products[productsIndex].price * productSettings.productQuantity;
-
-        let totalQuantityHtml = document.getElementById('totalQuantity');
-        totalQuantityHtml.textContent = totalQuantity;
-
-        let totalPriceHtml = document.getElementById('totalPrice');
-        totalPriceHtml.textContent = totalPrice;
-
+        // Selecting the article to delete on click
+            let articleToDelete = deleteItem.closest('article');
+            let articleToDeleteId = articleToDelete.getAttribute('data-id');
+            let articleToDeleteColor = articleToDelete.getAttribute('data-color');
+            let articleToDeleteIdColor = articleToDeleteId + articleToDeleteColor;
+    
+            deleteItem.addEventListener('click', deleteArticle);
+    
+            // Modifying quantity, to call the totalCalculus function that will modify quantity in real-time
+            // Removing article from the DOM, and deleting hte entry of the selected product in the localstorage (cart)
+                function deleteArticle() {
+                    productSettings.productQuantity = -productSettings.productQuantity;
+                    articleToDelete.remove();
+                    localStorage.removeItem(`${articleToDeleteIdColor}`);
+                    totalCalculus();
+                }
         i++;
     }
-}
 
-function removeProducts(products) {
-    let deleteItem;
-    for (let i in products) {
-        console.log(products[i]._id);
-        deleteItem = document.getElementById(`delete${products[i]._id}${products[i].color}`);
-        console.log(deleteItem);
+    // Handling the display of total quantity and total price
+    totalCalculus();
+
+    function totalCalculus() {
+        let ii = 0;
+        let totalQuantity = 0;
+        let totalPrice = 0;
+
+        while (ii < localStorage.length) {
+            let productLinea = localStorage.getItem(localStorage.key(ii));
+            console.log(productLinea);
+            let product = JSON.parse(productLinea);
+            console.log(product);
+            let productsIndex;
+
+            for(let prod in products) {
+                if (product.productId == products[prod]._id) {
+                    productsIndex = prod;
+                }
+            }
+            
+            totalQuantity += +product.productQuantity;
+            totalPrice += +products[productsIndex].price * +product.productQuantity;
+            let totalQuantityHtml = document.getElementById('totalQuantity');
+            totalQuantityHtml.textContent = totalQuantity;
+            let totalPriceHtml = document.getElementById('totalPrice');
+            totalPriceHtml.textContent = totalPrice;
+    
+            ii++;
+        } 
     }
 }
