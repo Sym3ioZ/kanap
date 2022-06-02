@@ -83,4 +83,14 @@ function addToCart() {
     if (counter == localStorage.length) {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
+
+    let addToCart = document.querySelector('.item__content');
+    let addToCartMessage = document.createElement('p');
+    addToCartMessage.textContent = 'Article ajouté au panier !';
+    addToCartMessage.style.textAlign = 'center';
+    addToCart.appendChild(addToCartMessage);
+    let timeOut = window.setTimeout(removeP, 3000);
+    function removeP() {
+        addToCartMessage.remove();
+    }
 }
