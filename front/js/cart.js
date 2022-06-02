@@ -182,3 +182,80 @@ function productsArrayReload() {
         i++;
     }
 }
+
+// Declaring contact object to store all form inputs
+let contact = {
+    firstName: '',
+    lastName: '',
+    address: '',
+    city: '',
+    email: ''
+};
+
+contactFormCheck ();
+
+// Retrieves all form elements to check them in order to validate contact object that will be sent to back
+function contactFormCheck () {
+    // declaring all vars pointing to the form elements, and their respective error messages
+    let firstName = document.getElementById('firstName');
+    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+    let lastName = document.getElementById('lastName');
+    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+    let address = document.getElementById('address');
+    let addressErrorMsg = document.getElementById('addressErrorMsg');
+    let city = document.getElementById('city');
+    let cityErrorMsg = document.getElementById('cityErrorMsg');
+    let email = document.getElementById('email');
+    let emailErrorMsg = document.getElementById('emailErrorMsg');
+
+    let maskNameCity = /^[a-zA-Z \-]*$/;
+    let maskAddress = /^[a-zA-Z0-9\-, ]*$/;
+    let maskEmail = /^["(a-z0-9)@(a-z0-9)\.(a-z)"]*$/;
+
+    firstName.addEventListener('change', inputCheck);
+    lastName.addEventListener('change', inputCheck);
+    city.addEventListener('change', inputCheck);
+    address.addEventListener('change', inputCheck);
+
+    function inputCheck () {
+        if (maskNameCity.test(firstName.value)) {
+            firstNameErrorMsg.textContent = '';
+            contact.firstName = firstName.value;
+        }
+        else {
+            firstNameErrorMsg.textContent = 'Erreur !';
+        }
+
+        if (maskNameCity.test(lastName.value)) {
+            lastNameErrorMsg.textContent = '';
+            contact.lastName = lastName.value;
+        }
+        else {
+            lastNameErrorMsg.textContent = 'Erreur !';
+        }
+
+        if (maskNameCity.test(city.value)) {
+            cityErrorMsg.textContent = '';
+            contact.city = city.value;
+        }
+        else {
+            cityErrorMsg.textContent = 'Erreur !';
+        }
+
+        if (maskAddress.test(address.value)) {
+            addressErrorMsg.textContent = '';
+            contact.address = address.value;
+        }
+        else {
+            addressErrorMsg.textContent = 'Erreur !';
+        }
+
+        if (maskEmail.test(email.value)) {
+            emailErrorMsg.textContent = '';
+            contact.email = email.value;
+        }
+        else {
+            emailErrorMsg.textContent = 'Erreur !';
+        }
+    }
+}
