@@ -94,7 +94,6 @@ function createCartListHtml(products) {
         function modifyQuantity(e) {
             productSettings.productQuantity = e.target.value;
             productSettingsLinea = JSON.stringify(productSettings);
-            console.log(productSettingsLinea);
             localStorage.setItem(`${productSettingsId}${productSettings.productColor}`, productSettingsLinea);
             totalCalculus();
         }
@@ -137,27 +136,33 @@ function createCartListHtml(products) {
         let totalQuantity = 0;
         let totalPrice = 0;
 
-        while (ii < localStorage.length) {
-            let productLinea = localStorage.getItem(localStorage.key(ii));
-            console.log(productLinea);
-            let product = JSON.parse(productLinea);
-            console.log(product);
-            let productsIndex;
+        if (localStorage.length > 0) {
+            while (ii < localStorage.length) {
+                let productLinea = localStorage.getItem(localStorage.key(ii));
+                let product = JSON.parse(productLinea);
+                let productsIndex;
 
-            for(let prod in products) {
-                if (product.productId == products[prod]._id) {
-                    productsIndex = prod;
+                for(let prod in products) {
+                    if (product.productId == products[prod]._id) {
+                        productsIndex = prod;
+                    }
                 }
-            }
-            
-            totalQuantity += +product.productQuantity;
-            totalPrice += +products[productsIndex].price * +product.productQuantity;
+                
+                totalQuantity += +product.productQuantity;
+                totalPrice += +products[productsIndex].price * +product.productQuantity;
+                let totalQuantityHtml = document.getElementById('totalQuantity');
+                totalQuantityHtml.textContent = totalQuantity;
+                let totalPriceHtml = document.getElementById('totalPrice');
+                totalPriceHtml.textContent = totalPrice;
+        
+                ii++;
+            } 
+        }
+        else {
             let totalQuantityHtml = document.getElementById('totalQuantity');
             totalQuantityHtml.textContent = totalQuantity;
             let totalPriceHtml = document.getElementById('totalPrice');
             totalPriceHtml.textContent = totalPrice;
-    
-            ii++;
-        } 
+        }
     }
 }
