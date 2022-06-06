@@ -208,9 +208,9 @@ function contactFormCheck () {
     let email = document.getElementById('email');
     let emailErrorMsg = document.getElementById('emailErrorMsg');
 
-    let maskNameCity = /^[a-zA-Z \-]*$/;
-    let maskAddress = /^[a-zA-Z0-9\-, ]*$/;
-    let maskEmail = /^["(a-z0-9)@(a-z0-9)\.(a-z)"]*$/;
+    let maskNameCity = /^[\D ]+$/;
+    let maskAddress = /^[\D\d, ]+$/;
+    let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
 
     firstName.addEventListener('change', inputCheck);
     lastName.addEventListener('change', inputCheck);
