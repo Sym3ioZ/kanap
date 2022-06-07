@@ -79,11 +79,12 @@ function addToCart() {
         counter++;
     }
 
-    // If the previous loop didn't succeeded, then counter = localstorage length, and then it sets the productsettings in a new entry of the cart (localstorage)
+    // If the previous loop didn't succeeded, then counter == localstorage length, and then it sets the productsettings in a new entry of the cart (localstorage)
     if (counter == localStorage.length) {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
 
+    // Displays a short temporary message to confirm that the product is added to cart
     let addToCart = document.querySelector('.item__content');
     let addToCartMessage = document.createElement('p');
     addToCartMessage.textContent = 'Article ajouté au panier !';

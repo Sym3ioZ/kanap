@@ -13,9 +13,9 @@ fetch('http://localhost:3000/api/products')
         console.log('erreur!');
     });
 
-let productsArray = [];
+let products = [];
 
-function createCartListHtml(products) {
+function createCartListHtml(productsList) {
     let i = 0;
     let cartItems = document.getElementById('cart__items');
 
@@ -25,8 +25,8 @@ function createCartListHtml(products) {
         let productSettingsId = productSettings.productId;
         let productsIndex;
 
-        for(let prod in products) {
-            if (productSettingsId == products[prod]._id) {
+        for(let prod in productsList) {
+            if (productSettingsId == productsList[prod]._id) {
                 productsIndex = prod;
             }
         }
@@ -42,8 +42,8 @@ function createCartListHtml(products) {
         let cartItemImage = document.createElement('div');
         cartItemImage.classList.add('cart__item__img');
         let itemImage = document.createElement('img');
-        itemImage.setAttribute('src', `${products[productsIndex].imageUrl}`);
-        itemImage.setAttribute('alt', `${products[productsIndex].description}`);
+        itemImage.setAttribute('src', `${productsList[productsIndex].imageUrl}`);
+        itemImage.setAttribute('alt', `${productsList[productsIndex].description}`);
         cartItemImage.appendChild(itemImage);
         cartItem.appendChild(cartItemImage);
 
@@ -57,13 +57,13 @@ function createCartListHtml(products) {
         
         // Creating name, color, and price elements in product details
         let productName = document.createElement('h2');
-        productName.textContent = `${products[productsIndex].name}`;
+        productName.textContent = `${productsList[productsIndex].name}`;
         cartItemContentDescription.appendChild(productName);
         let productColor = document.createElement('p');
         productColor.textContent = `Couleur: ${productSettings.productColor}`;
         cartItemContentDescription.appendChild(productColor);
         let productPrice = document.createElement('p');
-        productPrice.textContent = `Prix: ${products[productsIndex].price} €`;
+        productPrice.textContent = `Prix: ${productsList[productsIndex].price} €`;
         cartItemContentDescription.appendChild(productPrice);
 
         // integrating quantity and delete elements
@@ -111,21 +111,21 @@ function createCartListHtml(products) {
         cartItemContentSettingsDelete.appendChild(deleteItem);
 
         // Selecting the article to delete on click
-            let articleToDelete = deleteItem.closest('article');
-            let articleToDeleteId = articleToDelete.getAttribute('data-id');
-            let articleToDeleteColor = articleToDelete.getAttribute('data-color');
-            let articleToDeleteIdColor = articleToDeleteId + articleToDeleteColor;
-    
-            deleteItem.addEventListener('click', deleteArticle);
-    
-            // Modifying quantity, to call the totalCalculus function that will modify quantity in real-time
-            // Removing article from the DOM, and deleting hte entry of the selected product in the localstorage (cart)
-                function deleteArticle() {
-                    productSettings.productQuantity = -productSettings.productQuantity;
-                    articleToDelete.remove();
-                    localStorage.removeItem(`${articleToDeleteIdColor}`);
-                    totalCalculus();
-                }
+        let articleToDelete = deleteItem.closest('article');
+        let articleToDeleteId = articleToDelete.getAttribute('data-id');
+        let articleToDeleteColor = articleToDelete.getAttribute('data-color');
+        let articleToDeleteIdColor = articleToDeleteId + articleToDeleteColor;
+
+        deleteItem.addEventListener('click', deleteArticle);
+
+        // Modifying quantity, to call the totalCalculus function that will modify quantity in real-time
+        // Removing article from the DOM, and deleting the entry of the selected product in the localstorage (cart)
+        function deleteArticle() {
+            productSettings.productQuantity = -productSettings.productQuantity;
+            articleToDelete.remove();
+            localStorage.removeItem(`${articleToDeleteIdColor}`);
+            totalCalculus();
+        }
         i++;
     }
 
@@ -133,30 +133,30 @@ function createCartListHtml(products) {
     totalCalculus();
 
     function totalCalculus() {
-        let ii = 0;
+        let j = 0;
         let totalQuantity = 0;
         let totalPrice = 0;
 
         if (localStorage.length > 0) {
-            while (ii < localStorage.length) {
-                let productLinea = localStorage.getItem(localStorage.key(ii));
+            while (j < localStorage.length) {
+                let productLinea = localStorage.getItem(localStorage.key(j));
                 let product = JSON.parse(productLinea);
-                let productsIndex;
+                let productsIndex2;
 
-                for(let prod in products) {
-                    if (product.productId == products[prod]._id) {
-                        productsIndex = prod;
+                for(let prod in productsList) {
+                    if (product.productId == productsList[prod]._id) {
+                        productsIndex2 = prod;
                     }
                 }
                 
                 totalQuantity += +product.productQuantity;
-                totalPrice += +products[productsIndex].price * +product.productQuantity;
+                totalPrice += +productsList[productsIndex2].price * +product.productQuantity;
                 let totalQuantityHtml = document.getElementById('totalQuantity');
                 totalQuantityHtml.textContent = totalQuantity;
                 let totalPriceHtml = document.getElementById('totalPrice');
                 totalPriceHtml.textContent = totalPrice;
         
-                ii++;
+                j++;
             } 
         }
         else {
@@ -165,21 +165,21 @@ function createCartListHtml(products) {
             let totalPriceHtml = document.getElementById('totalPrice');
             totalPriceHtml.textContent = totalPrice;
         }
-        productsArrayReload();
+        productsReload();
     }
 }
 
 // Creates and updates (if necessary) an array containing all ids of the products in the cart
-function productsArrayReload() {
-    productsArray = [];
-    let i = 0;
-    while (i < localStorage.length) {
-        let productSettingsLinea = localStorage.getItem(localStorage.key(i));
+function productsReload() {
+    products = [];
+    let k = 0;
+    while (k < localStorage.length) {
+        let productSettingsLinea = localStorage.getItem(localStorage.key(k));
         let productSettings = JSON.parse(productSettingsLinea);
         let productSettingsId = productSettings.productId;
-        productsArray.push(productSettingsId);
+        products.push(productSettingsId);
 
-        i++;
+        k++;
     }
 }
 
@@ -210,12 +210,13 @@ function contactFormCheck () {
 
     let maskNameCity = /^[\D ]+$/;
     let maskAddress = /^[\D\d, ]+$/;
-    let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/;
+    let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/; //.fr, .com, .gouv
 
     firstName.addEventListener('change', inputCheck);
     lastName.addEventListener('change', inputCheck);
     city.addEventListener('change', inputCheck);
     address.addEventListener('change', inputCheck);
+    email.addEventListener('change', inputCheck);
 
     function inputCheck () {
         if (maskNameCity.test(firstName.value)) {
@@ -258,4 +259,46 @@ function contactFormCheck () {
             emailErrorMsg.textContent = 'Erreur !';
         }
     }
+}
+
+// Submit handling, and POST request
+productsReload();
+
+
+
+let orderSubmitButton = document.getElementById('order');
+orderSubmitButton.addEventListener('click', postOrder);
+
+// Checks if contact form is OK, then calls POST request to retrieve orderId that will be displayed on confirmation.html
+async function postOrder(e) {
+    e.preventDefault();
+    
+    let order = {
+        method: 'POST',
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify({contact, products})
+    }
+    
+    let postOrder = await fetch('http://localhost:3000/api/products/order', order)
+        .then(function(res) {
+            if (res.ok) { 
+                return res.json();
+            }
+        })
+        .then(function(value) {
+            console.log(value);
+            return value;
+        })
+        .catch(function(err) {
+            console.log(err);
+            alert(err);
+        });
+
+    let orderId = postOrder.orderId;
+
+    console.log(orderId);
+
+    document.location.assign (`./confirmation.html?id=${orderId}`);
 }
