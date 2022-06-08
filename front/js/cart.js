@@ -192,22 +192,23 @@ let contact = {
     email: ''
 };
 
+// declaring all vars pointing to the form elements, and their respective error messages
+let firstName = document.getElementById('firstName');
+let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+let lastName = document.getElementById('lastName');
+let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+let address = document.getElementById('address');
+let addressErrorMsg = document.getElementById('addressErrorMsg');
+let city = document.getElementById('city');
+let cityErrorMsg = document.getElementById('cityErrorMsg');
+let email = document.getElementById('email');
+let emailErrorMsg = document.getElementById('emailErrorMsg');
+
 contactFormCheck ();
 
 // Retrieves all form elements to check them in order to validate contact object that will be sent to back
 function contactFormCheck () {
-    // declaring all vars pointing to the form elements, and their respective error messages
-    let firstName = document.getElementById('firstName');
-    let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
-    let lastName = document.getElementById('lastName');
-    let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
-    let address = document.getElementById('address');
-    let addressErrorMsg = document.getElementById('addressErrorMsg');
-    let city = document.getElementById('city');
-    let cityErrorMsg = document.getElementById('cityErrorMsg');
-    let email = document.getElementById('email');
-    let emailErrorMsg = document.getElementById('emailErrorMsg');
-
+    // Decalring regex masks to check inputs validity
     let maskNameCity = /^[a-zA-Zéèëêöôï \-]+$/;
     let maskAddress = /^[a-zA-Z0-9éèëêöôï \-]+$/;
     let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/; //.fr, .com, .gouv
@@ -272,33 +273,38 @@ orderSubmitButton.addEventListener('click', postOrder);
 // Checks if contact form is OK, then calls POST request to retrieve orderId that will be displayed on confirmation.html
 async function postOrder(e) {
     e.preventDefault();
-    
-    let order = {
-        method: 'POST',
-        headers: {
-            "content-type": "application/json"
-        },
-        body: JSON.stringify({contact, products})
+
+    if ((firstNameErrorMsg.textContent || lastNameErrorMsg.textContent || addressErrorMsg.textContent || cityErrorMsg.textContent || emailErrorMsg.textContent == 'Erreur !')) {
+        alert('Erreur formulaire! Veuillez vérifier votre saisie.');
     }
-    
-    let postOrder = await fetch('http://localhost:3000/api/products/order', order)
-        .then(function(res) {
-            if (res.ok) { 
-                return res.json();
-            }
-        })
-        .then(function(value) {
-            console.log(value);
-            return value;
-        })
-        .catch(function(err) {
-            console.log(err);
-            alert(err);
-        });
+    else {
+        let order = {
+            method: 'POST',
+            headers: {
+                "content-type": "application/json"
+            },
+            body: JSON.stringify({contact, products})
+        }
+        
+        let postOrder = await fetch('http://localhost:3000/api/products/order', order)
+            .then(function(res) {
+                if (res.ok) { 
+                    return res.json();
+                }
+            })
+            .then(function(value) {
+                console.log(value);
+                return value;
+            })
+            .catch(function(err) {
+                console.log(err);
+                alert(err);
+            });
 
-    let orderId = postOrder.orderId;
+        let orderId = postOrder.orderId;
 
-    console.log(orderId);
+        console.log(orderId);
 
-    document.location.assign (`./confirmation.html?id=${orderId}`);
+        document.location.assign (`./confirmation.html?id=${orderId}`);
+    }
 }
