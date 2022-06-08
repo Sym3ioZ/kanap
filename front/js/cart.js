@@ -208,8 +208,8 @@ function contactFormCheck () {
     let email = document.getElementById('email');
     let emailErrorMsg = document.getElementById('emailErrorMsg');
 
-    let maskNameCity = /^[\D ]+$/;
-    let maskAddress = /^[\D\d, ]+$/;
+    let maskNameCity = /^[a-zA-Zéèëêöôï \-]+$/;
+    let maskAddress = /^[a-zA-Z0-9éèëêöôï \-]+$/;
     let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/; //.fr, .com, .gouv
 
     firstName.addEventListener('change', inputCheck);
