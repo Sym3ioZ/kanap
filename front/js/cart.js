@@ -13,6 +13,7 @@ fetch('http://localhost:3000/api/products')
         console.log('erreur!');
     });
 
+// Declaring products array that will be sent to the API
 let products = [];
 
 function createCartListHtml(productsList) {
@@ -118,7 +119,7 @@ function createCartListHtml(productsList) {
 
         deleteItem.addEventListener('click', deleteArticle);
 
-        // Modifying quantity, to call the totalCalculus function that will modify quantity in real-time
+        // Modifying quantity, to call the totalCalculus function that will modify quantity and price display in real-time
         // Removing article from the DOM, and deleting the entry of the selected product in the localstorage (cart)
         function deleteArticle() {
             productSettings.productQuantity = -productSettings.productQuantity;
@@ -151,25 +152,20 @@ function createCartListHtml(productsList) {
                 
                 totalQuantity += +product.productQuantity;
                 totalPrice += +productsList[productsIndex2].price * +product.productQuantity;
-                let totalQuantityHtml = document.getElementById('totalQuantity');
-                totalQuantityHtml.textContent = totalQuantity;
-                let totalPriceHtml = document.getElementById('totalPrice');
-                totalPriceHtml.textContent = totalPrice;
-        
+
                 j++;
             } 
         }
-        else {
-            let totalQuantityHtml = document.getElementById('totalQuantity');
-            totalQuantityHtml.textContent = totalQuantity;
-            let totalPriceHtml = document.getElementById('totalPrice');
-            totalPriceHtml.textContent = totalPrice;
-        }
+        let totalQuantityHtml = document.getElementById('totalQuantity');
+        totalQuantityHtml.textContent = totalQuantity;
+        let totalPriceHtml = document.getElementById('totalPrice');
+        totalPriceHtml.textContent = totalPrice;
+
         productsReload();
     }
 }
 
-// Creates and updates (if necessary) an array containing all ids of the products in the cart
+// Creates empty products array and updates it (if necessary), containing only ids of the products in the cart
 function productsReload() {
     products = [];
     let k = 0;
@@ -206,12 +202,12 @@ let emailErrorMsg = document.getElementById('emailErrorMsg');
 
 contactFormCheck ();
 
-// Retrieves all form elements to check them in order to validate contact object that will be sent to back
+// Checks each form input comparing to regex masks, and displays error message if not valid (via inputCheck() callback)
 function contactFormCheck () {
-    // Decalring regex masks to check inputs validity
-    let maskNameCity = /^[a-zA-Zéèëêöôï \-]+$/;
-    let maskAddress = /^[a-zA-Z0-9éèëêöôï \-]+$/;
-    let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/; //.fr, .com, .gouv
+    // Declaring regex masks to check inputs validity
+    let maskNameCity = /^[a-zA-Zéèëêöôï \-]+$/; // names and city name (only alphabetical chars)
+    let maskAddress = /^[a-zA-Z0-9éèëêöôï \-]+$/; // Address can contain numbers (ie: zip code, street number,...)
+    let maskEmail = /^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\.[a-z]{2,4}$/; //.fr, .com, .gouv,...
 
     firstName.addEventListener('change', inputCheck);
     lastName.addEventListener('change', inputCheck);
@@ -263,8 +259,17 @@ function contactFormCheck () {
 }
 
 // Submit handling, and POST request
-productsReload();
+productsReload(); // recalling this function to refresh the products array before sending it to the API
 
+// Function that will check if one or more input is invalid
+function formCheck() {
+    if ((firstNameErrorMsg.textContent || lastNameErrorMsg.textContent || addressErrorMsg.textContent || cityErrorMsg.textContent || emailErrorMsg.textContent == 'Erreur !')) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
 
 
 let orderSubmitButton = document.getElementById('order');
@@ -274,8 +279,8 @@ orderSubmitButton.addEventListener('click', postOrder);
 async function postOrder(e) {
     e.preventDefault();
 
-    if ((firstNameErrorMsg.textContent || lastNameErrorMsg.textContent || addressErrorMsg.textContent || cityErrorMsg.textContent || emailErrorMsg.textContent == 'Erreur !')) {
-        alert('Erreur formulaire! Veuillez vérifier votre saisie.');
+    if (!formCheck()) {
+        alert('Erreur formulaire! Veuillez vérifier votre saisie.'); // If one or more input is invalid, displays errormsg and doesn't POST
     }
     else {
         let order = {
@@ -301,10 +306,10 @@ async function postOrder(e) {
                 alert(err);
             });
 
-        let orderId = postOrder.orderId;
+        let orderId = postOrder.orderId; // Retrieves orderId from API response
 
         console.log(orderId);
 
-        document.location.assign (`./confirmation.html?id=${orderId}`);
+        document.location.assign (`./confirmation.html?id=${orderId}`); // Redirects to confirmation page with the orderId in url
     }
 }

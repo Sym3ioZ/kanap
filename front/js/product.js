@@ -1,5 +1,6 @@
 'use strict';
 
+// Retrieving product Id from the url
 let url = new URL(window.location.href);
 let productId = url.searchParams.get('id');
 
@@ -38,11 +39,11 @@ function createProductHtml(product) {
     productDescription.textContent = `${product.description}`;
 
     // Creates another option in the select markup ('colors') for each color available for the actual product
-    for (let color in product.colors) {
+    for (let j in product.colors) {
         let colorChoice = document.getElementById('colors');
         let productColor = document.createElement('option');
-        productColor.setAttribute('value', `${product.colors[color]}`);
-        productColor.textContent = `${product.colors[color]}`;
+        productColor.setAttribute('value', `${product.colors[j]}`);
+        productColor.textContent = `${product.colors[j]}`;
         colorChoice.appendChild(productColor);
     }
 }
@@ -67,7 +68,7 @@ function addToCart() {
     let i =0;
     // Determines if the product with the selected color already exists in the cart(localstorage), if true, only modifies quantity and break
     while (i < localStorage.length) {
-        if (localStorage.key(i) == (productId + color)) {
+        if ((localStorage.key(i) == (productId + color)) && (colorSelector.selectedIndex != 0)) {
             let localCart = JSON.parse(localStorage.getItem(localStorage.key(i)));
             localCart.productQuantity += +quantity.value;
             let localCartLinea = JSON.stringify(localCart);
@@ -80,18 +81,23 @@ function addToCart() {
     }
 
     // If the previous loop didn't succeeded, then counter == localstorage length, and then it sets the productsettings in a new entry of the cart (localstorage)
-    if (counter == localStorage.length) {
+    if ((counter == localStorage.length) && (colorSelector.selectedIndex != 0)) {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
 
     // Displays a short temporary message to confirm that the product is added to cart
     let addToCart = document.querySelector('.item__content');
     let addToCartMessage = document.createElement('p');
-    addToCartMessage.textContent = 'Article ajouté au panier !';
-    addToCartMessage.style.textAlign = 'center';
-    addToCart.appendChild(addToCartMessage);
-    let timeOut = window.setTimeout(removeP, 3000);
-    function removeP() {
-        addToCartMessage.remove();
+    if (colorSelector.selectedIndex == 0) {
+        addToCartMessage.textContent = 'Veuillez choisir une couleur !';
     }
+    else {
+        addToCartMessage.textContent = 'Article ajouté au panier !';
+    }
+        addToCartMessage.style.textAlign = 'center';
+        addToCart.appendChild(addToCartMessage);
+        window.setTimeout(removeP, 3000);
+        function removeP() {
+            addToCartMessage.remove();
+        }
 }
