@@ -65,7 +65,7 @@ function addToCart() {
     let productSettingsLinea = JSON.stringify(productSettings);
 
     let counter = 0;
-    let i =0;
+    let i = 0;
     // Determines if the product with the selected color already exists in the cart(localstorage), if true, only modifies quantity and break
     while (i < localStorage.length) {
         if ((localStorage.key(i) == (productId + color)) && (colorSelector.selectedIndex != 0)) {

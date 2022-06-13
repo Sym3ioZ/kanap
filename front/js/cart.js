@@ -165,15 +165,15 @@ function createCartListHtml(productsList) {
     }
 }
 
-// Creates empty products array and updates it (if necessary), containing only ids of the products in the cart
+// Empties products array and updates it (if necessary), containing only ids of the products in the cart
 function productsReload() {
     products = [];
     let k = 0;
     while (k < localStorage.length) {
-        let productSettingsLinea = localStorage.getItem(localStorage.key(k));
-        let productSettings = JSON.parse(productSettingsLinea);
-        let productSettingsId = productSettings.productId;
-        products.push(productSettingsId);
+        let productsArrayEntryLinea = localStorage.getItem(localStorage.key(k));
+        let productsArrayEntry = JSON.parse(productsArrayEntryLinea);
+        let productsArrayEntryId = productsArrayEntry.productId;
+        products.push(productsArrayEntryId);
 
         k++;
     }
@@ -259,7 +259,7 @@ function contactFormCheck () {
 }
 
 // Submit handling, and POST request
-productsReload(); // recalling this function to refresh the products array before sending it to the API
+productsReload(); // recalling this function to eventually refresh the products array before sending it to the API
 
 // Function that will check if one or more input is invalid
 function formCheck() {
