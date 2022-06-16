@@ -3,6 +3,7 @@
 // Retrieves the "items" section in index.html
 let items = document.getElementById('items');
 
+// Requests the API to retrieve the full catalog of products
 fetch('http://localhost:3000/api/products')
     .then(function(res) {
     if (res.ok) { 

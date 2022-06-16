@@ -1,5 +1,6 @@
 'use strict';
 
+// Requests the API to retrieve all products from the catalog
 fetch('http://localhost:3000/api/products')
     .then(function(res) {
     if (res.ok) { 
@@ -16,6 +17,7 @@ fetch('http://localhost:3000/api/products')
 // Declaring products array that will be sent to the API
 let products = [];
 
+// Creating all HTML elements to display the items present in the cart
 function createCartListHtml(productsList) {
     let i = 0;
     let cartItems = document.getElementById('cart__items');
@@ -122,7 +124,6 @@ function createCartListHtml(productsList) {
         // Modifying quantity, to call the totalCalculus function that will modify quantity and price display in real-time
         // Removing article from the DOM, and deleting the entry of the selected product in the localstorage (cart)
         function deleteArticle() {
-            productSettings.productQuantity = -productSettings.productQuantity;
             articleToDelete.remove();
             localStorage.removeItem(`${articleToDeleteIdColor}`);
             totalCalculus();
@@ -144,9 +145,9 @@ function createCartListHtml(productsList) {
                 let product = JSON.parse(productLinea);
                 let productsIndex2;
 
-                for(let prod in productsList) {
-                    if (product.productId == productsList[prod]._id) {
-                        productsIndex2 = prod;
+                for(let prodIndex in productsList) {
+                    if (product.productId == productsList[prodIndex]._id) {
+                        productsIndex2 = prodIndex;
                     }
                 }
                 
@@ -191,14 +192,24 @@ let contact = {
 // declaring all vars pointing to the form elements, and their respective error messages
 let firstName = document.getElementById('firstName');
 let firstNameErrorMsg = document.getElementById('firstNameErrorMsg');
+firstNameErrorMsg.textContent = '*';
 let lastName = document.getElementById('lastName');
 let lastNameErrorMsg = document.getElementById('lastNameErrorMsg');
+lastNameErrorMsg.textContent = '*';
 let address = document.getElementById('address');
 let addressErrorMsg = document.getElementById('addressErrorMsg');
+addressErrorMsg.textContent = '*';
 let city = document.getElementById('city');
 let cityErrorMsg = document.getElementById('cityErrorMsg');
+cityErrorMsg.textContent = '*';
 let email = document.getElementById('email');
 let emailErrorMsg = document.getElementById('emailErrorMsg');
+emailErrorMsg.textContent = '*';
+
+let cart__order = document.querySelector('form.cart__order__form');
+let requiredFieldsMsg = document.createElement('p');
+requiredFieldsMsg.textContent = '* : champs obligatoires';
+cart__order.appendChild(requiredFieldsMsg);
 
 contactFormCheck ();
 
@@ -215,6 +226,7 @@ function contactFormCheck () {
     address.addEventListener('change', inputCheck);
     email.addEventListener('change', inputCheck);
 
+    // Compares each form entry with the regex masks, updates contact object if OK, else error message
     function inputCheck () {
         if (maskNameCity.test(firstName.value)) {
             firstNameErrorMsg.textContent = '';
@@ -261,9 +273,9 @@ function contactFormCheck () {
 // Submit handling, and POST request
 productsReload(); // recalling this function to eventually refresh the products array before sending it to the API
 
-// Function that will check if one or more input is invalid
+// Function that will check if one or more input is invalid on submit click (see further)
 function formCheck() {
-    if ((firstNameErrorMsg.textContent || lastNameErrorMsg.textContent || addressErrorMsg.textContent || cityErrorMsg.textContent || emailErrorMsg.textContent == 'Erreur !')) {
+    if (firstNameErrorMsg.textContent || lastNameErrorMsg.textContent || addressErrorMsg.textContent || cityErrorMsg.textContent || emailErrorMsg.textContent == ('Erreur !' || '*')) {
         return false;
     }
     else {
@@ -283,6 +295,7 @@ async function postOrder(e) {
         alert('Erreur formulaire! Veuillez vérifier votre saisie.'); // If one or more input is invalid, displays errormsg and doesn't POST
     }
     else {
+        // creating order object sent in the POST request
         let order = {
             method: 'POST',
             headers: {
@@ -307,8 +320,6 @@ async function postOrder(e) {
             });
 
         let orderId = postOrder.orderId; // Retrieves orderId from API response
-
-        console.log(orderId);
 
         document.location.assign (`./confirmation.html?id=${orderId}`); // Redirects to confirmation page with the orderId in url
     }

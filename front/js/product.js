@@ -4,6 +4,7 @@
 let url = new URL(window.location.href);
 let productId = url.searchParams.get('id');
 
+// Requests the API to retrieve the product with the id passed in the url (see above)
 fetch (`http://localhost:3000/api/products/${productId}`)
     .then (function(res) {
         if (res.ok) {
@@ -85,7 +86,7 @@ function addToCart() {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
 
-    // Displays a short temporary message to confirm that the product is added to cart
+    // Displays a short temporary message under addtocart button to confirm that the product is added to cart, or there is an error
     let addToCart = document.querySelector('.item__content');
     let addToCartMessage = document.createElement('p');
     if (colorSelector.selectedIndex == 0) {
