@@ -23,7 +23,6 @@ function createProductsHtml(products) {
 
         // Creates the "a" link that contains the product card
         let productLink = document.createElement('a');
-        productLink.style.width = '70%';
         productLink.setAttribute("href",`./product.html?id=${products[prod]._id}`); // Sends the id in the url
 
         // Creates the "article" representing the product card

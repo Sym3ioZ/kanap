@@ -69,7 +69,7 @@ function addToCart() {
     let i = 0;
     // Determines if the product with the selected color already exists in the cart(localstorage), if true, only modifies quantity and break
     while (i < localStorage.length) {
-        if ((localStorage.key(i) == (productId + color)) && (colorSelector.selectedIndex != 0) && (quantity.value !=0)) {
+        if ((localStorage.key(i) == (productId + color)) && (colorSelector.selectedIndex != 0) && (quantity.value >0)) {
             let localCart = JSON.parse(localStorage.getItem(localStorage.key(i)));
             localCart.productQuantity += +quantity.value;
             let localCartLinea = JSON.stringify(localCart);
@@ -82,7 +82,7 @@ function addToCart() {
     }
 
     // If the previous loop didn't succeeded, then counter == localstorage length, and then it sets the productsettings in a new entry of the cart (localstorage)
-    if ((counter == localStorage.length) && (colorSelector.selectedIndex != 0) && (quantity.value != 0)) {
+    if ((counter == localStorage.length) && (colorSelector.selectedIndex != 0) && (quantity.value > 0)) {
         localStorage.setItem(`${productId}`+`${color}`, productSettingsLinea);
     }
 
@@ -92,7 +92,7 @@ function addToCart() {
     if (colorSelector.selectedIndex == 0) {
         addToCartMessage.textContent = 'Veuillez choisir une couleur !';
     }
-    else if (quantity.value == 0) {
+    else if (quantity.value < 1) {
         addToCartMessage.textContent = 'Veuillez indiquer une quantité !';
     }
     else {
